@@ -1,6 +1,6 @@
 # Platformer documentation
 
-# The first episode
+# [The first episode](https://github.com/hingsli/PlatformerTutorial/commit/bad742b2cc9509add48f696f36b368878b8adb73)
 
 **Game.java**
 
@@ -8,11 +8,16 @@
 - The class has two instance variables: **`gameWindow`** and **`gamePanel`**.
 - The **`Game`** constructor initializes **`gamePanel`** by creating a new **`GamePanel`** object and initializes **`gameWindow`** by creating a new **`GameWindow`** object and passing **`gamePanel`** as an argument.
 
-**GamePanel.java**
+![截屏2023-02-20 16.58.18.png](Platformer%20documentation%208fe2f5795710422782a126a1009c1073/%25E6%2588%25AA%25E5%25B1%258F2023-02-20_16.58.18.png)
 
 - The **`GamePanel`** class extends the **`JPanel`** class and represents the game panel.
+
+**GamePanel.java**
+
 - The **`GamePanel`** constructor takes no arguments.
 - The **`paintComponent`** method is overridden to draw a rectangle on the panel.
+
+![截屏2023-02-20 16.59.10.png](Platformer%20documentation%208fe2f5795710422782a126a1009c1073/%25E6%2588%25AA%25E5%25B1%258F2023-02-20_16.59.10.png)
 
 **GameWindow.java**
 
@@ -21,12 +26,16 @@
 - The **`GameWindow`** constructor takes a **`GamePanel`** object as an argument.
 - The **`GameWindow`** constructor initializes **`jframe`** by creating a new **`JFrame`** object, sets its size to 400x400 pixels, sets the default close operation to exit the application when the window is closed, adds the **`gamePanel`** to the frame, and makes the frame visible.
 
+![截屏2023-02-20 16.59.24.png](Platformer%20documentation%208fe2f5795710422782a126a1009c1073/%25E6%2588%25AA%25E5%25B1%258F2023-02-20_16.59.24.png)
+
 **MainClass.java**
 
 - The **`MainClass`** class represents the main entry point of the application.
 - The **`main`** method is the entry point of the application and creates a new **`Game`** object.
 
-# **We add inputs and move our rectangle**
+![截屏2023-02-20 16.59.41.png](Platformer%20documentation%208fe2f5795710422782a126a1009c1073/%25E6%2588%25AA%25E5%25B1%258F2023-02-20_16.59.41.png)
+
+# **[We add inputs and move our rectangle](https://github.com/hingsli/PlatformerTutorial/commit/d3ecb74b29a952c24464053fd0cfa54c1b918c00)**
 
 **KeyboardInputs.java**
 
@@ -37,6 +46,50 @@
 - The class has three methods that override the methods of the **`KeyListener`** interface: **`keyTyped`**, **`keyReleased`**, and **`keyPressed`**.
 - The **`keyTyped`** and **`keyReleased`** methods are empty since they are not needed for this implementation.
 - The **`keyPressed`** method is implemented to handle keyboard input. It checks the key code of the pressed key and calls the corresponding method in the **`gamePanel`** object to change the delta values of the **`GamePanel`** object. If the 'W' key is pressed, it calls **`changeYDelta`** with a value of -5, if the 'A' key is pressed, it calls **`changeXDelta`** with a value of -5, if the 'S' key is pressed, it calls **`changeYDelta`** with a value of 5, and if the 'D' key is pressed, it calls **`changeXDelta`** with a value of 5.
+
+```java
+public class KeyboardInputs implements KeyListener {
+
+	private GamePanel gamePanel;
+
+	public KeyboardInputs(GamePanel gamePanel) {
+		this.gamePanel = gamePanel;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_W:
+			gamePanel.changeYDelta(-5);
+			break;
+		case KeyEvent.VK_A:
+			gamePanel.changeXDelta(-5);
+			break;
+		case KeyEvent.VK_S:
+			gamePanel.changeYDelta(5);
+			break;
+		case KeyEvent.VK_D:
+			gamePanel.changeXDelta(5);
+			break;
+		}
+
+	}
+
+}
+```
 
 **MouseInputs.java**
 
@@ -49,18 +102,65 @@
 - The **`mouseMoved`** method is implemented to handle mouse motion events. It receives a **`MouseEvent`** object as an argument and sets the position of the rectangle in the **`gamePanel`** object to the position of the mouse cursor.
 - The **`mouseDragged`** method is not implemented and is empty.
 
+```java
+public class MouseInputs implements MouseListener, MouseMotionListener {
+
+	private GamePanel gamePanel;
+	public MouseInputs(GamePanel gamePanel) {
+		this.gamePanel= gamePanel;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		gamePanel.setRectPos(e.getX(), e.getY());
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("Mouse clicked!");
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
+```
+
 **Game.java**
 
 - The **`Game`** constructor has been updated to include a call to **`requestFocus`** on the **`gamePanel`** object.
 - The **`requestFocus`** method is called to ensure that the **`GamePanel`** object has focus when the game is started.
 
-```java
-public Game() {
-    gamePanel = new GamePanel();
-    gameWindow = new GameWindow(gamePanel);
-    gamePanel.requestFocus();
-}
-```
+![截屏2023-02-20 17.02.43.png](Platformer%20documentation%208fe2f5795710422782a126a1009c1073/%25E6%2588%25AA%25E5%25B1%258F2023-02-20_17.02.43.png)
 
 The **`gamePanel.requestFocus()`** method call has been added to the end of the constructor to ensure that the **`GamePanel`** object has focus when the game is started. This is important because it allows the **`GamePanel`** object to receive keyboard input and mouse input from the user.
 
@@ -70,6 +170,14 @@ The **`gamePanel.requestFocus()`** method call has been added to the end of the 
 - The **`changeXDelta`** and **`changeYDelta`** methods have been added to change the delta values of the rectangle and repaint the panel.
 - The **`setRectPos`** method has been added to set the position of the rectangle to the current mouse position and repaint the panel.
 - The **`paintComponent`** method has been updated to use the current values of **`xDelta`** and **`yDelta`** to draw the rectangle.
+
+![截屏2023-02-20 17.03.23.png](Platformer%20documentation%208fe2f5795710422782a126a1009c1073/%25E6%2588%25AA%25E5%25B1%258F2023-02-20_17.03.23.png)
+
+**GameWindow.java**
+
+![截屏2023-02-20 17.04.38.png](Platformer%20documentation%208fe2f5795710422782a126a1009c1073/%25E6%2588%25AA%25E5%25B1%258F2023-02-20_17.04.38.png)
+
+# [The Game loop Episode.](https://github.com/hingsli/PlatformerTutorial/commit/ad8fcc0bd8df3bb85e1277f66fc70d031fc9c9a7)
 
 ```java
 public GamePanel() {
@@ -111,8 +219,6 @@ public void paintComponent(Graphics g) {
 
 The **`paintComponent`** method has been updated to use the current values of **`xDelta`** and **`yDelta`** to draw the rectangle. When the **`repaint`** method is called, the **`paintComponent`**
 method is invoked and the rectangle is redrawn with the updated position.
-
-# The Game loop Episode.
 
 **MouseInputs.java**
 
@@ -202,7 +308,7 @@ The **`Game`** class now implements the **`Runnable`** interface and overrides i
 - The **`setRectPos`** method has been modified to simply update the **`xDelta`** and **`yDelta`** variables, without calling **`repaint()`**.
 - The **`spawnRect`** method has been added to add a new **`MyRect`** object to the **`rects`** list at the specified position.
 
-# Episode 04, we add images
+# [Episode 04, we add images](https://github.com/hingsli/PlatformerTutorial/commit/ce7db1a3b1cf7aa53287c4c3140beda77e6e1838)
 
 There is no significant change in the **`MouseInputs`** class. The only change is the removal of the code in the **`mouseClicked`** method that printed "Mouse clicked!" to the console. 
 
@@ -265,7 +371,7 @@ public class GameWindow {
 }
 ```
 
-# **We add Animations to the game.**
+# **[We add Animations to the game.](https://github.com/hingsli/PlatformerTutorial/commit/10664b02263406565e3117485a9b7d157123b356)**
 
 In the **`keyPressed`** method, I added a switch statement to handle each key press, and call the **`setDirection()`** method on the **`gamePanel`** object with the appropriate direction constant.
 
@@ -286,13 +392,13 @@ In the **`GamePanel`** class, the following changes have been made:
 
 Created a new **`Constants`** class that includes inner classes with constant values for **`Directions`** and **`PlayerConstants`**. Included a method **`GetSpriteAmount`** that returns the number of sprites that are associated with each player action. This method is used in the **`GamePanel`** class to determine the number of sprites to display for each player action. The addition of the **`Constants`** class improves the organization of the code by providing a centralized location for constant values to be stored.
 
-# **We add the update part to the gameloop.**
+# **[We add the update part to the gameloop.](https://github.com/hingsli/PlatformerTutorial/commit/fdcc6a6548c882b2e3328a650b95cc6a39765d66)**
 
 It looks like you have added the **`update()`** method which calls **`updateGame()`** in the **`GamePanel`** class. Also, you have added the game loop, which runs in the **`run()`** method and calculates the time for each frame and update. You are using a **`deltaF`** variable to count the number of frames and a **`deltaU`** variable to count the number of updates that need to be made. The loop updates the game and repaints the game panel depending on the value of **`deltaU`** and **`deltaF`**. Finally, you are also printing the FPS and UPS at the end of each second.
 
 In the **`GamePanel`** class, the method **`updateGame()`** has been added, and the methods **`updateAnimationTick()`**, **`setAnimation()`**, and **`updatePos()`** have been moved to **`updateGame()`**. The **`aniSpeed`** variable has been changed to 25, which means that the animation will change less frequently.
 
-# **Adding the player class and changing how we move**
+# **[Adding the player class and changing how we move](https://github.com/hingsli/PlatformerTutorial/commit/16ef253e7e7525d2bd5060d1294e097833054d76)**
 
 A new class called **`Entity`** is added. This class is an abstract class that has two fields for the **`x`**
 and **`y`** coordinates of the entity, as well as a constructor to initialize these fields. However, this class doesn't have any methods or behavior specified yet.
@@ -371,4 +477,84 @@ jframe.addWindowFocusListener(new WindowFocusListener() {
         // TODO Auto-generated method stub
     }
 });
+```
+
+# [Adding the first work for our levels](https://github.com/hingsli/PlatformerTutorial/commit/3ab7519052438ac52a417c6fd8ea4f03000dca9a)
+
+In the **`Entity`** class, four fields were added in the constructor: **`width`** and **`height`** to determine the size of the entity. This is important to correctly render the entity and determine collisions with other entities in the game.
+
+Here is the updated **`Entity`** class:
+
+```java
+package entities;
+
+public abstract class Entity {
+
+    protected float x, y;
+    protected int width, height;
+
+    public Entity(float x, float y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+}
+```
+
+In the **`Player`** class, the **`Entity`** constructor is now explicitly called with the **`width`** and **`height`** parameters.
+
+```java
+public Player(float x, float y, int width, int height) {
+	super(x, y, width, height);
+	loadAnimations();
+}
+```
+
+This means that when a **`Player`** object is created, its width and height can be explicitly set.
+
+Additionally, the **`Player`** class now has a method called **`setAttacking`** that allows the **`attacking`** field to be set externally. This is done with the following code:
+
+```java
+public void setAttacking(boolean attacking) {
+	this.attacking = attacking;
+}
+```
+
+Now, other parts of the program can set the **`attacking`** field of a **`Player`** object to **`true`** or **`false`** as needed.
+
+You added a new class named "`Level`" which has an integer 2D array field named "`lvlData`" and a constructor that takes a 2D integer array "`lvlData`" as a parameter and sets it to the field. It also has a method named "`getSpriteIndex`" which takes two integer parameters "x" and "y" and returns the value in the "`lvlData`" array at the specified indices.
+
+In the Game class, you added constants to define the size of the tiles and the game's dimensions. Additionally, you added a `LevelManager` instance to handle drawing the game's level.
+
+Here's the added code:
+
+```java
+public final static int TILES_DEFAULT_SIZE = 32;
+public final static float SCALE = 2f;
+public final static int TILES_IN_WIDTH = 26;
+public final static int TILES_IN_HEIGHT = 14;
+public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
+public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
+public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+
+private LevelManager levelManager;
+
+// ...
+
+private void initClasses() {
+    player = new Player(200, 200, (int) (64 * SCALE), (int) (40 * SCALE));
+    levelManager = new LevelManager(this);
+}
+
+public void update() {
+    levelManager.update();
+    player.update();
+}
+
+public void render(Graphics g) {
+    levelManager.draw(g);
+    player.render(g);
+}
 ```
