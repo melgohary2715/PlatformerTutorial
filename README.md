@@ -373,11 +373,11 @@ public class GameWindow {
 
 # **[We add Animations to the game.](https://github.com/hingsli/PlatformerTutorial/commit/10664b02263406565e3117485a9b7d157123b356)**
 
-In the **`keyPressed`** method, I added a switch statement to handle each key press, and call the **`setDirection()`** method on the **`gamePanel`** object with the appropriate direction constant.
+In the **`keyPressed`** method, a switch statement was added to handle each key press, and the **`setDirection()`** method was called on the **`gamePanel`** object with the appropriate direction constant.
 
-In the **`keyReleased`** method, I added a switch statement to handle each key release, and call the **`setMoving(false)`** method on the **`gamePanel`** object to stop the player from moving in that direction.
+In the **`keyReleased`** method, a switch statement was added to handle each key release, and the **`setMoving(false)`** method was called on the **`gamePanel`** object to stop the player from moving in that direction.
 
-I also imported the **`Directions`** constants from a separate **`Constants`** class using the static import syntax to make the code more readable.
+The **`Directions`** constants was imported from a separate **`Constants`** class using the static import syntax to make the code more readable.
 
 In the **`GamePanel`** class, the following changes have been made:
 
@@ -394,7 +394,7 @@ Created a new **`Constants`** class that includes inner classes with constant va
 
 # **[We add the update part to the gameloop.](https://github.com/hingsli/PlatformerTutorial/commit/fdcc6a6548c882b2e3328a650b95cc6a39765d66)**
 
-It looks like you have added the **`update()`** method which calls **`updateGame()`** in the **`GamePanel`** class. Also, you have added the game loop, which runs in the **`run()`** method and calculates the time for each frame and update. You are using a **`deltaF`** variable to count the number of frames and a **`deltaU`** variable to count the number of updates that need to be made. The loop updates the game and repaints the game panel depending on the value of **`deltaU`** and **`deltaF`**. Finally, you are also printing the FPS and UPS at the end of each second.
+The **`update()`** method was added which calls **`updateGame()`** in the **`GamePanel`** class. Also, the game loop was added, which runs in the **`run()`** method and calculates the time for each frame and update. A **`deltaF`** variable was used to count the number of frames and a **`deltaU`** variable to count the number of updates that need to be made. The loop updates the game and repaints the game panel depending on the value of **`deltaU`** and **`deltaF`**. Finally, the FPS and UPS were also printed at the end of each second.
 
 In the **`GamePanel`** class, the method **`updateGame()`** has been added, and the methods **`updateAnimationTick()`**, **`setAnimation()`**, and **`updatePos()`** have been moved to **`updateGame()`**. The **`aniSpeed`** variable has been changed to 25, which means that the animation will change less frequently.
 
@@ -524,9 +524,75 @@ public void setAttacking(boolean attacking) {
 
 Now, other parts of the program can set the **`attacking`** field of a **`Player`** object to **`true`** or **`false`** as needed.
 
-You added a new class named "`Level`" which has an integer 2D array field named "`lvlData`" and a constructor that takes a 2D integer array "`lvlData`" as a parameter and sets it to the field. It also has a method named "`getSpriteIndex`" which takes two integer parameters "x" and "y" and returns the value in the "`lvlData`" array at the specified indices.
+A new class named "`Level`" was added which has an integer 2D array field named "`lvlData`" and a constructor that takes a 2D integer array "`lvlData`" as a parameter and sets it to the field. It also has a method named "`getSpriteIndex`" which takes two integer parameters "x" and "y" and returns the value in the "`lvlData`" array at the specified indices.
 
-In the Game class, you added constants to define the size of the tiles and the game's dimensions. Additionally, you added a `LevelManager` instance to handle drawing the game's level.
+```java
+package levels;
+
+public class Level {
+
+	private int[][] lvlData;
+
+	public Level(int[][] lvlData) {
+		this.lvlData = lvlData;
+	}
+
+	public int getSpriteIndex(int x, int y) {
+		return lvlData[y][x];
+	}
+
+}
+```
+
+The **`LevelManager`** class was added, which manages the current level of the game. It loads the level data from a file using the **`LoadSave`** utility class, creates a **`Level`** object, and uses the level data to draw the level on the game panel. Here's the code snippet for the **`LevelManager`** class:
+
+```java
+package levels;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
+import main.Game;
+import utilz.LoadSave;
+
+public class LevelManager {
+
+	private Game game;
+	private BufferedImage[] levelSprite;
+	private Level levelOne;
+
+	public LevelManager(Game game) {
+		this.game = game;
+		importOutsideSprites();
+		levelOne = new Level(LoadSave.GetLevelData());
+	}
+
+	private void importOutsideSprites() {
+		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
+		levelSprite = new BufferedImage[48];
+		for (int j = 0; j < 4; j++)
+			for (int i = 0; i < 12; i++) {
+				int index = j * 12 + i;
+				levelSprite[index] = img.getSubimage(i * 32, j * 32, 32, 32);
+			}
+	}
+
+	public void draw(Graphics g) {
+		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++)
+			for (int i = 0; i < Game.TILES_IN_WIDTH; i++) {
+				int index = levelOne.getSpriteIndex(i, j);
+				g.drawImage(levelSprite[index], Game.TILES_SIZE * i, Game.TILES_SIZE * j, Game.TILES_SIZE, Game.TILES_SIZE, null);
+			}
+	}
+
+	public void update() {
+
+	}
+
+}
+```
+
+In the Game class, constants were added to define the size of the tiles and the game's dimensions. Additionally, you added a `LevelManager` instance to handle drawing the game's level.
 
 Here's the added code:
 
@@ -558,3 +624,9 @@ public void render(Graphics g) {
     player.render(g);
 }
 ```
+
+A new class called **`LoadSave`** was added that contains methods for loading and saving game resources. Specifically, you added two methods to load sprite atlases and level data from image files.
+
+**`GetSpriteAtlas`** takes a **`fileName`** argument and returns a **`BufferedImage`** object containing the image data from the specified file. It loads the image using an input stream, and catches and prints any IOException that may occur.
+
+**`GetLevelData`** loads level data from an image file that contains a grayscale representation of the level. It first creates a 2D integer array **`lvlData`** to store the tile values, then loads the image using **`GetSpriteAtlas`**. It then loops through the pixels of the image and gets the red component of the color at each pixel. If the value is greater than or equal to 48, it sets the tile value to 0, otherwise it sets it to the red value. The resulting **`lvlData`** array is then returned.
